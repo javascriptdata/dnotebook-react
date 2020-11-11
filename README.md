@@ -1,6 +1,6 @@
 # Dnotebook-react
 
-Recreatiing the essential part of [Dnotebook](https://playnotebook.jsdata.org/) using react.
+Recreatiing the essential part of [Dnotebook](https://playnotebook.jsdata.org/) using react. See old repo [here](https://github.com/opensource9ja/dnotebook)
 
 Disclaimer: UI is not fancy (no css is used for now).
 
