@@ -25,6 +25,7 @@ module.exports = {
   },
   rules: {
     "no-param-reassign": ["error", { props: false }],
+    camelcase: "off",
     "linebreak-style": 0,
     "prettier/prettier": "error",
   },
