@@ -1,4 +1,9 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useRef, useEffect } from "react";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import PropTypes from "prop-types";
 import CodeMirror from "react-codemirror";
 import { Remarkable } from "remarkable";
 
@@ -30,12 +35,14 @@ export default function Cell({
       }
     } else {
       const cellstate = { ...cell, input: refCode.current.value };
+      // eslint-disable-next-line no-use-before-define
       showOutput();
       dispatch({ type: "CHANGE_CELL", payload: cellstate });
     }
   };
 
   const setId = () => {
+    // eslint-disable-next-line radix
     const id = currentCell || parseInt(cell.id.split("_")[1]);
     setCurrentCell(id);
   };
@@ -56,15 +63,18 @@ export default function Cell({
 
   const upCell = (type) => {
     const id = cellId - 1;
+    // eslint-disable-next-line no-use-before-define
     newCell(id, type);
   };
 
   const downCell = (type) => {
     const id = cellId;
+    // eslint-disable-next-line no-use-before-define
     newCell(id, type);
   };
 
   const newCell = (id, type) => {
+    // eslint-disable-next-line no-shadow
     const newCell = {
       id: `cell_${currentCell + 1}`,
       input: "",
@@ -97,7 +107,6 @@ export default function Cell({
   const deleteCell = () => {
     dispatch({ type: "DELETE_CELL", payload: cell.id });
   };
-
   return (
     <>
       <button
@@ -169,3 +178,8 @@ export default function Cell({
 function TextCell({ refText }) {
   return <textarea ref={refText}></textarea>;
 }
+
+TextCell.propTypes = {
+  refText: PropTypes.element,
+  id: PropTypes.string,
+};

@@ -1,3 +1,5 @@
+/* eslint-disable import/prefer-default-export */
+// eslint-disable-next-line consistent-return
 export const reducer = (state, action) => {
   if (action.type === "CHANGE_CELL") {
     const stateCells = state.cells.map((cell) => {
@@ -15,7 +17,6 @@ export const reducer = (state, action) => {
   if (action.type === "ADD_CELL") {
     const newCell = [...state.cells];
     newCell.splice(action.currentId, 0, action.payload);
-    console.log(newCell);
     return {
       ...state,
       cells: newCell,
@@ -34,7 +35,6 @@ export const reducer = (state, action) => {
   }
 
   if (action.type === "LOAD_NOTE") {
-    console.log("action payload", action.payload);
     return { ...state, cells: action.payload };
   }
 };

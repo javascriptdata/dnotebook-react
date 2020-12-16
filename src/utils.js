@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 export function print_val(val) {
   /// Neeed refactoring. Lot of duplicated line of code
   if (Array.isArray(val[0])) {
@@ -96,6 +97,7 @@ function table(df) {
     body += b_String;
   });
 
+  // eslint-disable-next-line no-shadow
   const table = `
         <div style="overflow: auto; max-height: 300px;"><table class="df-table" border="1">
         <thead>
