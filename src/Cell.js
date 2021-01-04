@@ -180,6 +180,6 @@ function TextCell({ refText }) {
 }
 
 TextCell.propTypes = {
-  refText: PropTypes.element,
+  refText: PropTypes.object,
   id: PropTypes.string,
 };

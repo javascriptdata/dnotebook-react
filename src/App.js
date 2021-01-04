@@ -5,6 +5,7 @@ import Cell from "./Cell";
 import { reducer } from "./reducer";
 import { makeGlobal, downLoad_notebook, load_notebook } from "./utils";
 import Layout from "./components/layout/layout";
+import NavBar from "./components/NavBar/navbar";
 
 const defaultState = {
   cells: [{ id: "cell_1", input: "", output: "", type: "code" }],
@@ -17,6 +18,7 @@ function App() {
 
   return (
     <Layout>
+      <NavBar />
       <button
         onClick={() => {
           downLoad_notebook(state);
