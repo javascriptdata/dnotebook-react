@@ -55,6 +55,7 @@ export default function Cell({
       refCode.current.style.display = cell.input ? "none" : "block";
     } else {
       refCode.current.getCodeMirror().setValue(cell.input);
+      refCode.current.getCodeMirror().setSize("100%", "auto");
       refOutput.current.innerHTML = cell.output;
     }
     setId();
@@ -109,48 +110,55 @@ export default function Cell({
   };
   return (
     <>
-      <button
-        onClick={() => {
-          getCode();
-        }}
-      >
-        Run
-      </button>
-      <button
-        onClick={() => {
-          upCell("code");
-        }}
-      >
-        Up cell
-      </button>
-      <button
-        onClick={() => {
-          downCell("code");
-        }}
-      >
-        down cell
-      </button>
-      <button
-        onClick={() => {
-          upCell("text");
-        }}
-      >
-        Text up
-      </button>
-      <button
-        onClick={() => {
-          downCell("text");
-        }}
-      >
-        Text down
-      </button>
-      <button
-        onClick={() => {
-          deleteCell();
-        }}
-      >
-        Delete Cell
-      </button>
+      <div className="max-w-2xl mx-auto mt-20">
+        <button
+          className="bg-green-600 rounded-sm p-2 text-white mr-2 fas fa-play"
+          onClick={() => {
+            getCode();
+          }}
+        >
+          Run
+        </button>
+
+        <button
+          className="bg-blue-400 rounded-sm p-2 text-white fas fa-sort-up"
+          onClick={() => {
+            upCell("code");
+          }}
+        >
+          Code
+        </button>
+        <button
+          className="bg-blue-400 rounded-sm p-2 text-white mr-2 fas fa-sort-down"
+          onClick={() => {
+            downCell("code");
+          }}
+        >
+          Code
+        </button>
+        <button
+          className="bg-blue-400 rounded-sm p-2 text-white fas fa-sort-up"
+          onClick={() => {
+            upCell("text");
+          }}
+        >
+          Text
+        </button>
+        <button
+          className="bg-blue-400 rounded-sm p-2 text-white mr-2 fas fa-sort-down"
+          onClick={() => {
+            downCell("text");
+          }}
+        >
+          Text
+        </button>
+        <button
+          className="bg-red-800 rounded-sm p-2 text-white mr-2 fas fa-trash-alt"
+          onClick={() => {
+            deleteCell();
+          }}
+        ></button>
+      </div>
       {cell.type === "code" ? (
         <CodeMirror
           value={cell.input}
@@ -171,6 +179,7 @@ export default function Cell({
           disableOutput();
         }}
       ></div>
+      <br />
     </>
   );
 }
