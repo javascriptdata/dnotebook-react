@@ -28,8 +28,7 @@ export const NavLinksList = styled.nav`
   list-style: none;
   justify-content: space-evenly;
   align-items: center;
-  width: 30rem;
-
+  margin-left: 20px !important;
   @media only screen and (max-width: 768px) {
     display: none;
   }
@@ -45,6 +44,7 @@ export const NavLinksList = styled.nav`
 
 export const NavLinkItem = styled.li`
   text-decoration: none;
+  margin-right: 20px;
 
   a {
     text-decoration: none;

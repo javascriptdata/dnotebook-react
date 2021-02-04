@@ -7,10 +7,12 @@ import Routes from "./routes/routes";
 
 function App() {
   return (
-    <Layout>
+    <div>
       <NavBar />
-      <Routes />
-    </Layout>
+      <Layout>
+        <Routes />
+      </Layout>
+    </div>
   );
 }
 

@@ -1,15 +1,24 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from "prop-types";
 import CodeMirror from "react-codemirror";
 import { Remarkable } from "remarkable";
+import { CgMathPlus, CgArrowUp, CgArrowDown, CgTrash } from "react-icons/cg";
+import { BsFillCaretRightFill } from "react-icons/bs";
+import {
+  AddCellButton,
+  CellButton,
+  CellHead,
+  OtherCellButtonWrapper,
+  CellTextArea,
+} from "./Cell.style";
 
 require("codemirror/lib/codemirror.css");
 require("codemirror/mode/javascript/javascript");
-require("codemirror/theme/dracula.css");
+require("codemirror/theme/yeti.css");
 
 export default function Cell({
   cell,
@@ -20,7 +29,14 @@ export default function Cell({
 }) {
   const refCode = useRef(null);
   const refOutput = useRef("");
-
+  const [showMoreCellButton, setShowMoreCellButton] = useState("none");
+  useEffect(() => {
+    if (currentCell === cellId) {
+      setShowMoreCellButton("flex");
+    } else {
+      setShowMoreCellButton("none");
+    }
+  }, [cellId, currentCell]);
   const getCode = () => {
     if (cell.type === "code") {
       const input = refCode.current.getCodeMirror().getValue();
@@ -109,62 +125,124 @@ export default function Cell({
   };
   return (
     <>
-      <button
-        onClick={() => {
-          getCode();
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: "20px",
         }}
       >
-        Run
-      </button>
-      <button
-        onClick={() => {
-          upCell("code");
-        }}
-      >
-        Up cell
-      </button>
-      <button
-        onClick={() => {
-          downCell("code");
-        }}
-      >
-        down cell
-      </button>
-      <button
-        onClick={() => {
-          upCell("text");
-        }}
-      >
-        Text up
-      </button>
-      <button
-        onClick={() => {
-          downCell("text");
-        }}
-      >
-        Text down
-      </button>
-      <button
-        onClick={() => {
-          deleteCell();
-        }}
-      >
-        Delete Cell
-      </button>
-      {cell.type === "code" ? (
-        <CodeMirror
-          value={cell.input}
-          ref={refCode}
-          options={{
-            tabSize: 2,
-            theme: "dracula",
-            lineNumbers: true,
-            mode: "javascript",
-          }}
-        />
-      ) : (
-        <TextCell refText={refCode} />
-      )}
+        <div style={{ marginTop: "30px" }}>
+          {currentCell === cellId ? (
+            <button
+              style={{
+                background: "none",
+                border: "none",
+                marginLeft: "-10px",
+              }}
+              onClick={() => {
+                getCode();
+              }}
+            >
+              <BsFillCaretRightFill color="#FFDF28" fontSize="30px" />
+            </button>
+          ) : (
+            <div>[{cellId}]:</div>
+          )}
+        </div>
+        <div style={{ width: "95%" }}>
+          <CellHead>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <AddCellButton
+                onClick={() => {
+                  downCell("code");
+                }}
+              >
+                <CgMathPlus
+                  style={{
+                    fontSize: "16px",
+                    color: "rgb(179, 179, 179)",
+                  }}
+                />
+                Code
+              </AddCellButton>
+              <AddCellButton
+                onClick={() => {
+                  upCell("text");
+                }}
+                style={{
+                  marginLeft: "10px",
+                }}
+              >
+                <CgMathPlus
+                  style={{
+                    fontSize: "16px",
+                    color: "rgb(179, 179, 179)",
+                  }}
+                />
+                Text
+              </AddCellButton>
+            </div>
+            <OtherCellButtonWrapper display={showMoreCellButton}>
+              <CellButton
+                onClick={() => {
+                  upCell("code");
+                }}
+              >
+                <div>
+                  {" "}
+                  <CgArrowUp />
+                </div>
+              </CellButton>
+              <CellButton
+                onClick={() => {
+                  downCell("text");
+                }}
+              >
+                <div>
+                  <CgArrowDown />
+                </div>
+              </CellButton>
+              <CellButton
+                onClick={() => {
+                  deleteCell();
+                }}
+              >
+                <div>
+                  <CgTrash />
+                </div>
+              </CellButton>
+            </OtherCellButtonWrapper>
+          </CellHead>
+          <div
+            style={{
+              marginTop: "10px",
+            }}
+          >
+            {cell.type === "code" ? (
+              <CodeMirror
+                onFocusChange={() => setCurrentCell(cellId)}
+                value={cell.input}
+                ref={refCode}
+                options={{
+                  tabSize: 1,
+                  theme: "yeti",
+                  lineNumbers: true,
+                  mode: "javascript",
+                }}
+              />
+            ) : (
+              <TextCell refText={refCode} />
+            )}
+          </div>
+        </div>
+      </div>
       <div
         ref={refOutput}
         onClick={() => {
@@ -176,7 +254,7 @@ export default function Cell({
 }
 
 function TextCell({ refText }) {
-  return <textarea ref={refText}></textarea>;
+  return <CellTextArea ref={refText}></CellTextArea>;
 }
 
 TextCell.propTypes = {
