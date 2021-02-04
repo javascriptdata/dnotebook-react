@@ -11,6 +11,7 @@ import {
   Hamburger,
   Line,
 } from "./navbar.style";
+import logo from "../../static/logo.svg";
 
 export default function NavBar() {
   const links = [
@@ -43,8 +44,22 @@ export default function NavBar() {
       <NavBg>
         <NavWrapper>
           <Logo>
-            <NavLink to="/">
-              <img src={""} alt="" /> D notebook
+            <NavLink
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+              to="/"
+            >
+              <img
+                style={{
+                  borderRadius: "5px",
+                }}
+                width="35px"
+                src={logo}
+                alt="dnotebook-logo"
+              />{" "}
+              <span style={{ marginLeft: "10px" }}>notebook</span>
             </NavLink>
           </Logo>
           <NavLinksList>
