@@ -139,7 +139,6 @@ export default function Cell({
               style={{
                 background: "none",
                 border: "none",
-                marginLeft: "-10px",
               }}
               onClick={() => {
                 getCode();

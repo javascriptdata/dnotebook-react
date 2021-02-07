@@ -2,6 +2,6 @@
 import styled from "styled-components";
 
 export const Layout = styled.div`
-  margin: 0 auto;
+  margin: 0px auto;
   max-width: 1400px;
 `;
