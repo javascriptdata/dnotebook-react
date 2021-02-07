@@ -28,6 +28,7 @@ export const OtherCellButtonWrapper = styled.div`
   margin-top: 37px;
   display: ${(props) => props.display};
 `;
+
 export const CellButton = styled.button`
   background: transparent;
   border: 1px solid #aeaeae;
@@ -38,6 +39,7 @@ export const CellButton = styled.button`
   align-items: center;
   justify-content: center;
   border-radius: 2px;
+  cursor: pointer;
 `;
 
 export const CellTextArea = styled.textarea`
@@ -49,4 +51,13 @@ export const CellTextArea = styled.textarea`
   &:focus {
     outline: none;
   }
+`;
+
+export const Output = styled.div`
+  padding: 10px;
+  background: #2e2e2e;
+  border: none;
+  margin-top: 10px;
+  color: white;
+  width: 93.6%;
 `;

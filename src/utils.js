@@ -69,7 +69,7 @@ export function print_val(val) {
  * Displays Danfo DataFrame/Series in a formated table
  * @param {DataFrame} df
  */
-function table(df) {
+export function table(df) {
   const { col_types, series, columns, index, values } = df;
   let head = "";
 

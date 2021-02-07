@@ -1,3 +1,4 @@
+/* eslint-disable prefer-rest-params */
 /* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -8,12 +9,14 @@ import CodeMirror from "react-codemirror";
 import { Remarkable } from "remarkable";
 import { CgMathPlus, CgArrowUp, CgArrowDown, CgTrash } from "react-icons/cg";
 import { BsFillCaretRightFill } from "react-icons/bs";
+import { print_val, table } from "./utils";
 import {
   AddCellButton,
   CellButton,
   CellHead,
   OtherCellButtonWrapper,
   CellTextArea,
+  Output,
 } from "./Cell.style";
 
 require("codemirror/lib/codemirror.css");
@@ -40,9 +43,43 @@ export default function Cell({
   const getCode = () => {
     if (cell.type === "code") {
       const input = refCode.current.getCodeMirror().getValue();
+      // eslint-disable-next-line no-eval
+      let output = ("global", eval)(input);
       try {
+        if (Array.isArray(output)) {
+          output = print_val(output);
+        } else if (typeof output === "object" && output !== null) {
+          output = JSON.stringify(output);
+          if (output === "{}") {
+            output = "";
+          }
+        } else if (input.includes("console.log(")) {
+          // retreive value from the console function
+          console.oldLog = console.log;
+          console.log = function (value) {
+            output = value;
+            return value;
+          };
+          // eslint-disable-next-line no-eval
+          output = eval(input);
+          if (Array.isArray(output)) {
+            output = print_val(output);
+          } else if (typeof output === "object" && output !== null) {
+            output = JSON.stringify(output);
+            if (output === "{}") {
+              output = "";
+            }
+          }
+          console.log(output);
+        }
+        if (
+          input.includes("table") ||
+          input.includes("plot") ||
+          input.includes("console.log(")
+        ) {
+          output = table(output);
+        }
         // eslint-disable-next-line no-eval
-        const output = ("global", eval)(input) || "";
         const cellstate = { ...cell, input, output };
         dispatch({ type: "CHANGE_CELL", payload: cellstate });
       } catch (error) {
@@ -243,11 +280,18 @@ export default function Cell({
         </div>
       </div>
       <div
-        ref={refOutput}
-        onClick={() => {
-          disableOutput();
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
         }}
-      ></div>
+      >
+        <Output
+          ref={refOutput}
+          onClick={() => {
+            disableOutput();
+          }}
+        ></Output>
+      </div>
     </>
   );
 }
