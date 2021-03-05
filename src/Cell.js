@@ -5,18 +5,21 @@
 import React, { useRef, useEffect, useState } from "react";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from "prop-types";
+import TextareaAutosize from "react-textarea-autosize";
 import CodeMirror from "react-codemirror";
 import { Remarkable } from "remarkable";
 import { CgMathPlus, CgArrowUp, CgArrowDown, CgTrash } from "react-icons/cg";
 import { BsFillCaretRightFill } from "react-icons/bs";
-import { print_val, table } from "./utils";
+import { print_val } from "./utils";
 import {
   AddCellButton,
   CellButton,
   CellHead,
   OtherCellButtonWrapper,
-  CellTextArea,
   Output,
+  CellContainer,
+  RunContainer,
+  CellBodyContainer,
 } from "./Cell.style";
 
 require("codemirror/lib/codemirror.css");
@@ -34,6 +37,7 @@ export default function Cell({
   const refOutput = useRef("");
   const [showMoreCellButton, setShowMoreCellButton] = useState("none");
   useEffect(() => {
+    console.log(currentCell);
     if (currentCell === cellId) {
       setShowMoreCellButton("flex");
     } else {
@@ -44,9 +48,10 @@ export default function Cell({
     if (cell.type === "code") {
       const input = refCode.current.getCodeMirror().getValue();
       // eslint-disable-next-line no-eval
-      let output = ("global", eval)(input);
+      let output = ("global", eval)(input) || "";
       try {
         if (Array.isArray(output)) {
+          console.log("output");
           output = print_val(output);
         } else if (typeof output === "object" && output !== null) {
           output = JSON.stringify(output);
@@ -57,12 +62,12 @@ export default function Cell({
           // retreive value from the console function
           console.oldLog = console.log;
           console.log = function (value) {
-            output = value;
             return value;
           };
           // eslint-disable-next-line no-eval
           output = eval(input);
           if (Array.isArray(output)) {
+            console.log("output");
             output = print_val(output);
           } else if (typeof output === "object" && output !== null) {
             output = JSON.stringify(output);
@@ -70,15 +75,15 @@ export default function Cell({
               output = "";
             }
           }
-          console.log(output);
+          console.log(output, "helllo");
         }
-        if (
-          input.includes("table") ||
-          input.includes("plot") ||
-          input.includes("console.log(")
-        ) {
-          output = table(output);
-        }
+        // if (
+        //   input.includes("table") ||
+        //   input.includes("plot") ||
+        //   input.includes("console.log(")
+        // ) {
+        //   output = table(output);
+        // }
         // eslint-disable-next-line no-eval
         const cellstate = { ...cell, input, output };
         dispatch({ type: "CHANGE_CELL", payload: cellstate });
@@ -153,6 +158,8 @@ export default function Cell({
   const showOutput = () => {
     if (cell.type === "text") {
       refOutput.current.style.display = "block";
+      refOutput.current.style.background = "white";
+      refOutput.current.style.color = "black";
       refCode.current.style.display = "none";
     }
   };
@@ -162,32 +169,21 @@ export default function Cell({
   };
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginTop: "20px",
-        }}
-      >
-        <div style={{ marginTop: "30px" }}>
+      <CellContainer>
+        <RunContainer>
           {currentCell === cellId ? (
-            <button
-              style={{
-                background: "none",
-                border: "none",
-              }}
+            <div
               onClick={() => {
                 getCode();
               }}
             >
               <BsFillCaretRightFill color="#FFDF28" fontSize="30px" />
-            </button>
+            </div>
           ) : (
             <div>[{cellId}]:</div>
           )}
-        </div>
-        <div style={{ width: "95%" }}>
+        </RunContainer>
+        <CellBodyContainer>
           <CellHead>
             <div
               style={{
@@ -267,18 +263,25 @@ export default function Cell({
                 value={cell.input}
                 ref={refCode}
                 options={{
-                  tabSize: 1,
-                  theme: "yeti",
-                  lineNumbers: true,
                   mode: "javascript",
+                  extraKeys: { "Ctrl-Space": "autocomplete" },
+                  autoCloseBrackets: true,
+                  matchBrackets: true,
+                  lineNumbers: true,
+                  tabSize: 4,
+                  theme: "yeti",
+                  autocorrect: true,
                 }}
               />
             ) : (
-              <TextCell refText={refCode} />
+              <TextCell
+                selectCell={() => setCurrentCell(cellId)}
+                refText={refCode}
+              />
             )}
           </div>
-        </div>
-      </div>
+        </CellBodyContainer>
+      </CellContainer>
       <div
         style={{
           display: "flex",
@@ -296,8 +299,10 @@ export default function Cell({
   );
 }
 
-function TextCell({ refText }) {
-  return <CellTextArea ref={refText}></CellTextArea>;
+function TextCell({ refText, selectCell }) {
+  return (
+    <TextareaAutosize onFocus={selectCell} ref={refText}></TextareaAutosize>
+  );
 }
 
 TextCell.propTypes = {

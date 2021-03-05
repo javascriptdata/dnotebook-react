@@ -1,6 +1,23 @@
 /* eslint-disable import/prefer-default-export */
 import styled from "styled-components";
 
+export const CellContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+  width: 100%;
+`;
+
+export const RunContainer = styled.div`
+  width: 5%;
+  cursor: pointer;
+`;
+
+export const CellBodyContainer = styled.div`
+  width: 100%;
+`;
+
 export const AddCellButton = styled.button`
   background: transparent;
   border: 1px solid rgb(179, 179, 179);
@@ -20,11 +37,8 @@ export const CellHead = styled.div`
 `;
 
 export const OtherCellButtonWrapper = styled.div`
-  position: absolute;
-  z-index: 99 !important;
   display: flex;
   align-items: flex-end;
-  left: 89%;
   margin-top: 37px;
   display: ${(props) => props.display};
 `;

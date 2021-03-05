@@ -15,29 +15,30 @@ export const NoteEditContainer = styled.div`
 `;
 
 export const NoteTitle = styled.input`
-  background: transparent;
+  background: #fafafa;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
   text-align: center;
   font-size: 16px;
   border: none;
   border-radius: 5px;
-  height: 40px;
-  box-shadow: 0px 1px 1px 1px rgb(231, 231, 231);
-  width: 150px;
+  width: 160px;
+  height: 47px;
 `;
 
 export const DownloadNoteBook = styled.button`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  box-shadow: 0px 1px 1px 1px rgb(231, 231, 231);
-  min-width: 100px;
-  font-size: 14px;
-  height: 40px;
+  justify-content: center;
   background: #ffdf28;
-  border: none;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
   border-radius: 3px;
+  font-size: 15px;
+  border: none;
   cursor: pointer;
   margin-right: 20px;
+  width: 185px;
+  height: 47px;
 `;
 
 export const AddNoteInput = styled.input`

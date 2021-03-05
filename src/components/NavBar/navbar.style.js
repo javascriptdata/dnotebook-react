@@ -2,9 +2,6 @@
 import styled from "styled-components";
 
 export const NavBg = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: #2e2e2e;
   width: initial;
   box-shadow: 0px 2px 1px #ffdf28;
@@ -15,7 +12,7 @@ export const NavBg = styled.div`
 `;
 
 export const NavWrapper = styled.div`
-  width: 100%;
+  margin: 0px auto;
   max-width: 1400px;
   display: flex;
   align-items: center;
