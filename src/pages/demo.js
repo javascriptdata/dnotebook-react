@@ -1,7 +1,7 @@
 import React, { useState, useReducer } from "react";
 import Cell from "../Cell";
 import { reducer } from "../reducer";
-import { makeGlobal, downLoad_notebook, load_notebook } from "../utils";
+import { downLoad_notebook, load_notebook } from "../utils";
 import Header from "../components/header/header";
 
 const defaultState = {
@@ -12,7 +12,6 @@ export default function Demo() {
   const [state, dispatch] = useReducer(reducer, defaultState);
   const [currentCell, setCurrentCell] = useState(null);
 
-  makeGlobal();
   const load = () => load_notebook(dispatch);
   const download = () => downLoad_notebook(state);
   return (

@@ -1,3 +1,5 @@
+/* eslint-disable object-shorthand */
+/* eslint-disable no-unused-vars */
 /* eslint-disable prefer-rest-params */
 /* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -10,7 +12,7 @@ import CodeMirror from "react-codemirror";
 import { Remarkable } from "remarkable";
 import { CgMathPlus, CgArrowUp, CgArrowDown, CgTrash } from "react-icons/cg";
 import { BsFillCaretRightFill } from "react-icons/bs";
-import { print_val } from "./utils";
+// eslint-disable-next-line no-unused-vars
 import {
   AddCellButton,
   CellButton,
@@ -37,7 +39,6 @@ export default function Cell({
   const refOutput = useRef("");
   const [showMoreCellButton, setShowMoreCellButton] = useState("none");
   useEffect(() => {
-    console.log(currentCell);
     if (currentCell === cellId) {
       setShowMoreCellButton("flex");
     } else {
@@ -47,12 +48,11 @@ export default function Cell({
   const getCode = () => {
     if (cell.type === "code") {
       const input = refCode.current.getCodeMirror().getValue();
-      // eslint-disable-next-line no-eval
-      let output = ("global", eval)(input) || "";
       try {
+        // eslint-disable-next-line no-eval
+        let output = ("global", eval)(input) || "";
         if (Array.isArray(output)) {
-          console.log("output");
-          output = print_val(output);
+          output = window.print_val(output);
         } else if (typeof output === "object" && output !== null) {
           output = JSON.stringify(output);
           if (output === "{}") {
@@ -67,23 +67,14 @@ export default function Cell({
           // eslint-disable-next-line no-eval
           output = eval(input);
           if (Array.isArray(output)) {
-            console.log("output");
-            output = print_val(output);
+            output = window.print_val(output);
           } else if (typeof output === "object" && output !== null) {
             output = JSON.stringify(output);
             if (output === "{}") {
               output = "";
             }
           }
-          console.log(output, "helllo");
         }
-        // if (
-        //   input.includes("table") ||
-        //   input.includes("plot") ||
-        //   input.includes("console.log(")
-        // ) {
-        //   output = table(output);
-        // }
         // eslint-disable-next-line no-eval
         const cellstate = { ...cell, input, output };
         dispatch({ type: "CHANGE_CELL", payload: cellstate });

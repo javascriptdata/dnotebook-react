@@ -12,6 +12,7 @@ export const CellContainer = styled.div`
 export const RunContainer = styled.div`
   width: 5%;
   cursor: pointer;
+  margin-top: 5%;
 `;
 
 export const CellBodyContainer = styled.div`

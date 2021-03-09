@@ -1,3 +1,5 @@
+/* eslint-disable no-eval */
+/* eslint-disable no-multi-assign */
 /* eslint-disable no-plusplus */
 export function print_val(val) {
   /// Neeed refactoring. Lot of duplicated line of code
@@ -130,6 +132,43 @@ export const downLoad_notebook = (state) => {
   link.remove();
 };
 
+/**
+ * load package scripts via CDN into scope
+ * @param {Array} array of package CDNs to load
+ * @param {*} callback
+ */
+export const load_package = (array, callback) => {
+  try {
+    // document.getElementById("cell-running").style.display = "block";
+    const loader = function (src, handler) {
+      const script = document.createElement("script");
+      console.log(src);
+      script.type = "text/javascript";
+      script.src = src;
+      const a = "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest";
+      console.log(a);
+      script.onload = script.onreadystatechange = function () {
+        script.onreadystatechange = script.onload = null;
+        handler();
+      };
+      script.async = true;
+      document.body.appendChild(script);
+      eval(script);
+    };
+    (function run() {
+      if (array.length !== 0) {
+        loader(array.shift(), run);
+      } else {
+        // eslint-disable-next-line no-unused-expressions
+        callback && callback();
+      }
+      // document.getElementById("cell-running").style.display = "none";
+    })();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const load_notebook = (dispatch) => {
   const { files } = document.getElementById("import-notebook-file");
   let json_content = null;
@@ -145,7 +184,19 @@ export const load_notebook = (dispatch) => {
   }
 };
 
+/**
+ * Helper function to load CSV data into Danfo.js Data Structure
+ * @param {String} path to CSV data.
+ */
+async function load_csv(path) {
+  // eslint-disable-next-line no-undef
+  const df = await dfd.read_csv(path);
+  return df;
+}
+
 export const makeGlobal = () => {
   window.print_val = print_val;
   window.table = table;
+  window.load_package = load_package;
+  window.load_csv = load_csv;
 };
