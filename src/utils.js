@@ -137,19 +137,31 @@ export const downLoad_notebook = (state) => {
  * @param {Array} array of package CDNs to load
  * @param {*} callback
  */
-export const load_package = (array, callback) => {
+// eslint-disable-next-line consistent-return
+const load_package = async (array, callback) => {
   try {
-    // document.getElementById("cell-running").style.display = "block";
+    document.getElementById("play").style.display = "none";
+    document.getElementById("activity-loader").style.display = "block";
     const loader = function (src, handler) {
       const script = document.createElement("script");
-      console.log(src);
       script.type = "text/javascript";
       script.src = src;
-      const a = "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest";
-      console.log(a);
       script.onload = script.onreadystatechange = function () {
         script.onreadystatechange = script.onload = null;
+        document.getElementById("play").style.display = "block";
+        document.getElementById("activity-loader").style.display = "none";
+        document.getElementById("cell-output").innerHTML =
+          "Package sucessfully loaded";
+        document.getElementById("cell-output").style.color = "white";
         handler();
+      };
+      script.onerror = function (error) {
+        document.getElementById("play").style.display = "block";
+        document.getElementById("activity-loader").style.display = "none";
+        document.getElementById(
+          "cell-output"
+        ).innerHTML = `Failed to load package ${error.path[0].src}. Check internet connection or package url`;
+        document.getElementById("cell-output").style.color = "red";
       };
       script.async = true;
       document.body.appendChild(script);
@@ -162,8 +174,8 @@ export const load_package = (array, callback) => {
         // eslint-disable-next-line no-unused-expressions
         callback && callback();
       }
-      // document.getElementById("cell-running").style.display = "none";
     })();
+    return "done";
   } catch (error) {
     console.log(error);
   }

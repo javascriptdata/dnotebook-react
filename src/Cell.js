@@ -12,7 +12,6 @@ import CodeMirror from "react-codemirror";
 import { Remarkable } from "remarkable";
 import { CgMathPlus, CgArrowUp, CgArrowDown, CgTrash } from "react-icons/cg";
 import { BsFillCaretRightFill } from "react-icons/bs";
-// eslint-disable-next-line no-unused-vars
 import {
   AddCellButton,
   CellButton,
@@ -23,6 +22,7 @@ import {
   RunContainer,
   CellBodyContainer,
 } from "./Cell.style";
+import roll from "./static/rolling.svg";
 
 require("codemirror/lib/codemirror.css");
 require("codemirror/mode/javascript/javascript");
@@ -45,7 +45,7 @@ export default function Cell({
       setShowMoreCellButton("none");
     }
   }, [cellId, currentCell]);
-  const getCode = () => {
+  const getCode = async () => {
     if (cell.type === "code") {
       const input = refCode.current.getCodeMirror().getValue();
       try {
@@ -164,6 +164,7 @@ export default function Cell({
         <RunContainer>
           {currentCell === cellId ? (
             <div
+              id="play"
               onClick={() => {
                 getCode();
               }}
@@ -173,6 +174,13 @@ export default function Cell({
           ) : (
             <div>[{cellId}]:</div>
           )}
+          <img
+            id="activity-loader"
+            style={{ display: "none" }}
+            width="30px"
+            src={roll}
+            alt="running-cell"
+          />
         </RunContainer>
         <CellBodyContainer>
           <CellHead>
@@ -284,6 +292,7 @@ export default function Cell({
           onClick={() => {
             disableOutput();
           }}
+          id="cell-output"
         ></Output>
       </div>
     </>
