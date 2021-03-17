@@ -26,3 +26,7 @@ textarea{
 textarea:focus{
     outline: none;
 }
+a{
+  color: #36c5ce;
+  text-decoration: none;
+}

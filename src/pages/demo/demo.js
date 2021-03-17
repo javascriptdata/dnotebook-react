@@ -1,8 +1,8 @@
 import React, { useState, useReducer } from "react";
-import Cell from "../Cell";
-import { reducer } from "../reducer";
-import { downLoad_notebook, load_notebook } from "../utils";
-import Header from "../components/header/header";
+import Cell from "../../Cell";
+import { reducer } from "../../reducer";
+import { downLoad_notebook, load_notebook } from "../../utils";
+import Header from "../../components/header/header";
 
 const defaultState = {
   cells: [{ id: "cell_1", input: "", output: "", type: "code" }],

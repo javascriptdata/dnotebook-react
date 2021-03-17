@@ -35,6 +35,7 @@ export default function Cell({
   setCurrentCell,
   cellId,
 }) {
+  const cellOutputId = `#cell-output-${cellId}`;
   const refCode = useRef(null);
   const refOutput = useRef("");
   const [showMoreCellButton, setShowMoreCellButton] = useState("none");
@@ -46,6 +47,7 @@ export default function Cell({
     }
   }, [cellId, currentCell]);
   const getCode = async () => {
+    window.current_cell = cellId;
     if (cell.type === "code") {
       const input = refCode.current.getCodeMirror().getValue();
       try {
@@ -74,6 +76,14 @@ export default function Cell({
               output = "";
             }
           }
+        }
+        if (
+          input.includes("table") ||
+          input.includes("plot") ||
+          input.includes("console.log(")
+        ) {
+          // eslint-disable-next-line no-eval
+          console.log("hello world");
         }
         // eslint-disable-next-line no-eval
         const cellstate = { ...cell, input, output };
@@ -159,7 +169,7 @@ export default function Cell({
     dispatch({ type: "DELETE_CELL", payload: cell.id });
   };
   return (
-    <>
+    <div style={{ paddingBottom: "30px" }}>
       <CellContainer>
         <RunContainer>
           {currentCell === cellId ? (
@@ -292,10 +302,10 @@ export default function Cell({
           onClick={() => {
             disableOutput();
           }}
-          id="cell-output"
+          id={cellOutputId}
         ></Output>
       </div>
-    </>
+    </div>
   );
 }
 
