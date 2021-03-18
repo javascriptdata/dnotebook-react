@@ -2,8 +2,7 @@
 import styled from "styled-components";
 
 export const Layout = styled.div`
-  margin: 0 auto;
-  max-width: 1500px;
-  padding: 0px;
-  position: relative;
+  margin: 0px auto;
+  max-width: 1400px;
+  padding: 1rem;
 `;
