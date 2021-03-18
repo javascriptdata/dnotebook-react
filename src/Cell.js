@@ -1,15 +1,32 @@
+/* eslint-disable object-shorthand */
+/* eslint-disable no-unused-vars */
+/* eslint-disable prefer-rest-params */
 /* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from "prop-types";
+import TextareaAutosize from "react-textarea-autosize";
 import CodeMirror from "react-codemirror";
 import { Remarkable } from "remarkable";
+import { CgMathPlus, CgArrowUp, CgArrowDown, CgTrash } from "react-icons/cg";
+import { BsFillCaretRightFill } from "react-icons/bs";
+import {
+  AddCellButton,
+  CellButton,
+  CellHead,
+  OtherCellButtonWrapper,
+  Output,
+  CellContainer,
+  RunContainer,
+  CellBodyContainer,
+} from "./Cell.style";
+import roll from "./static/rolling.svg";
 
 require("codemirror/lib/codemirror.css");
 require("codemirror/mode/javascript/javascript");
-require("codemirror/theme/dracula.css");
+require("codemirror/theme/yeti.css");
 
 export default function Cell({
   cell,
@@ -18,15 +35,57 @@ export default function Cell({
   setCurrentCell,
   cellId,
 }) {
+  const cellOutputId = `#cell-output-${cellId}`;
   const refCode = useRef(null);
   const refOutput = useRef("");
-
-  const getCode = () => {
+  const [showMoreCellButton, setShowMoreCellButton] = useState("none");
+  useEffect(() => {
+    if (currentCell === cellId) {
+      setShowMoreCellButton("flex");
+    } else {
+      setShowMoreCellButton("none");
+    }
+  }, [cellId, currentCell]);
+  const getCode = async () => {
+    window.current_cell = cellId;
     if (cell.type === "code") {
       const input = refCode.current.getCodeMirror().getValue();
       try {
         // eslint-disable-next-line no-eval
-        const output = ("global", eval)(input) || "";
+        let output = ("global", eval)(input) || "";
+        if (Array.isArray(output)) {
+          output = window.print_val(output);
+        } else if (typeof output === "object" && output !== null) {
+          output = JSON.stringify(output);
+          if (output === "{}") {
+            output = "";
+          }
+        } else if (input.includes("console.log(")) {
+          // retreive value from the console function
+          console.oldLog = console.log;
+          console.log = function (value) {
+            return value;
+          };
+          // eslint-disable-next-line no-eval
+          output = eval(input);
+          if (Array.isArray(output)) {
+            output = window.print_val(output);
+          } else if (typeof output === "object" && output !== null) {
+            output = JSON.stringify(output);
+            if (output === "{}") {
+              output = "";
+            }
+          }
+        }
+        if (
+          input.includes("table") ||
+          input.includes("plot") ||
+          input.includes("console.log(")
+        ) {
+          // eslint-disable-next-line no-eval
+          console.log("hello world");
+        }
+        // eslint-disable-next-line no-eval
         const cellstate = { ...cell, input, output };
         dispatch({ type: "CHANGE_CELL", payload: cellstate });
       } catch (error) {
@@ -101,6 +160,8 @@ export default function Cell({
   const showOutput = () => {
     if (cell.type === "text") {
       refOutput.current.style.display = "block";
+      refOutput.current.style.background = "white";
+      refOutput.current.style.color = "black";
       refCode.current.style.display = "none";
     }
   };
@@ -109,83 +170,150 @@ export default function Cell({
     dispatch({ type: "DELETE_CELL", payload: cell.id });
   };
   return (
-    <>
-      <div className="max-w-2xl mx-auto mt-20">
-        <button
-          className="bg-green-600 rounded-sm p-2 text-white mr-2 fas fa-play"
-          onClick={() => {
-            getCode();
-          }}
-        >
-          Run
-        </button>
-
-        <button
-          className="bg-blue-400 rounded-sm p-2 text-white fas fa-sort-up"
-          onClick={() => {
-            upCell("code");
-          }}
-        >
-          Code
-        </button>
-        <button
-          className="bg-blue-400 rounded-sm p-2 text-white mr-2 fas fa-sort-down"
-          onClick={() => {
-            downCell("code");
-          }}
-        >
-          Code
-        </button>
-        <button
-          className="bg-blue-400 rounded-sm p-2 text-white fas fa-sort-up"
-          onClick={() => {
-            upCell("text");
-          }}
-        >
-          Text
-        </button>
-        <button
-          className="bg-blue-400 rounded-sm p-2 text-white mr-2 fas fa-sort-down"
-          onClick={() => {
-            downCell("text");
-          }}
-        >
-          Text
-        </button>
-        <button
-          className="bg-red-800 rounded-sm p-2 text-white mr-2 fas fa-trash-alt"
-          onClick={() => {
-            deleteCell();
-          }}
-        ></button>
-      </div>
-      {cell.type === "code" ? (
-        <CodeMirror
-          value={cell.input}
-          ref={refCode}
-          options={{
-            tabSize: 2,
-            theme: "dracula",
-            lineNumbers: true,
-            mode: "javascript",
-          }}
-        />
-      ) : (
-        <TextCell refText={refCode} />
-      )}
+    <div style={{ paddingBottom: "30px" }}>
+      <CellContainer>
+        <RunContainer>
+          {currentCell === cellId ? (
+            <div
+              id="play"
+              onClick={() => {
+                getCode();
+              }}
+            >
+              <BsFillCaretRightFill color="#FFDF28" fontSize="30px" />
+            </div>
+          ) : (
+            <div>[{cellId}]:</div>
+          )}
+          <img
+            id="activity-loader"
+            style={{ display: "none" }}
+            width="30px"
+            src={roll}
+            alt="running-cell"
+          />
+        </RunContainer>
+        <CellBodyContainer>
+          <CellHead>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <AddCellButton
+                onClick={() => {
+                  downCell("code");
+                }}
+              >
+                <CgMathPlus
+                  style={{
+                    fontSize: "16px",
+                    color: "rgb(179, 179, 179)",
+                  }}
+                />
+                Code
+              </AddCellButton>
+              <AddCellButton
+                onClick={() => {
+                  upCell("text");
+                }}
+                style={{
+                  marginLeft: "10px",
+                }}
+              >
+                <CgMathPlus
+                  style={{
+                    fontSize: "16px",
+                    color: "rgb(179, 179, 179)",
+                  }}
+                />
+                Text
+              </AddCellButton>
+            </div>
+            <OtherCellButtonWrapper display={showMoreCellButton}>
+              <CellButton
+                onClick={() => {
+                  upCell("code");
+                }}
+              >
+                <div>
+                  {" "}
+                  <CgArrowUp />
+                </div>
+              </CellButton>
+              <CellButton
+                onClick={() => {
+                  downCell("text");
+                }}
+              >
+                <div>
+                  <CgArrowDown />
+                </div>
+              </CellButton>
+              <CellButton
+                onClick={() => {
+                  deleteCell();
+                }}
+              >
+                <div>
+                  <CgTrash />
+                </div>
+              </CellButton>
+            </OtherCellButtonWrapper>
+          </CellHead>
+          <div
+            style={{
+              marginTop: "10px",
+            }}
+          >
+            {cell.type === "code" ? (
+              <CodeMirror
+                onFocusChange={() => setCurrentCell(cellId)}
+                value={cell.input}
+                ref={refCode}
+                options={{
+                  mode: "javascript",
+                  extraKeys: { "Ctrl-Space": "autocomplete" },
+                  autoCloseBrackets: true,
+                  matchBrackets: true,
+                  lineNumbers: true,
+                  tabSize: 4,
+                  theme: "yeti",
+                  autocorrect: true,
+                }}
+              />
+            ) : (
+              <TextCell
+                selectCell={() => setCurrentCell(cellId)}
+                refText={refCode}
+              />
+            )}
+          </div>
+        </CellBodyContainer>
+      </CellContainer>
       <div
-        ref={refOutput}
-        onClick={() => {
-          disableOutput();
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
         }}
-      ></div>
-      <br />
-    </>
+      >
+        <Output
+          ref={refOutput}
+          onClick={() => {
+            disableOutput();
+          }}
+          id={cellOutputId}
+        ></Output>
+      </div>
+    </div>
   );
 }
 
-function TextCell({ refText }) {
-  return <textarea ref={refText}></textarea>;
+function TextCell({ refText, selectCell }) {
+  return (
+    <TextareaAutosize onFocus={selectCell} ref={refText}></TextareaAutosize>
+  );
 }
 
 TextCell.propTypes = {

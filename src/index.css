@@ -11,6 +11,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+.CodeMirror{
+  min-height: 50px !important;
+  height: auto !important;
+}
+textarea{
+  width: 100%;
+  min-height: 7vh;
+  border: 1px solid #e5e1db;
+  border-radius: 5px;
+  resize: none;
+}
+textarea:focus{
+    outline: none;
+}
+a{
+  color: #36c5ce;
+  text-decoration: none;
+}

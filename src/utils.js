@@ -1,3 +1,30 @@
+// Function for cell on going activity
+function cellActivity(type, message) {
+  if (type === "loading") {
+    document.getElementById("play").style.display = "none";
+    document.getElementById("activity-loader").style.display = "block";
+    document.getElementById(`#cell-output-${window.current_cell}`).innerHTML =
+      "";
+  } else if (type === "success") {
+    document.getElementById("play").style.display = "block";
+    document.getElementById("activity-loader").style.display = "none";
+    document.getElementById(
+      `#cell-output-${window.current_cell}`
+    ).innerHTML = message;
+    document.getElementById(`#cell-output-${window.current_cell}`).style.color =
+      "white";
+  } else {
+    document.getElementById("play").style.display = "block";
+    document.getElementById("activity-loader").style.display = "none";
+    document.getElementById(
+      `#cell-output-${window.current_cell}`
+    ).innerHTML = message;
+    document.getElementById(`#cell-output-${window.current_cell}`).style.color =
+      "red";
+  }
+}
+/* eslint-disable no-eval */
+/* eslint-disable no-multi-assign */
 /* eslint-disable no-plusplus */
 export function print_val(val) {
   /// Neeed refactoring. Lot of duplicated line of code
@@ -69,7 +96,7 @@ export function print_val(val) {
  * Displays Danfo DataFrame/Series in a formated table
  * @param {DataFrame} df
  */
-function table(df) {
+export function table(df) {
   const { col_types, series, columns, index, values } = df;
   let head = "";
 
@@ -130,6 +157,44 @@ export const downLoad_notebook = (state) => {
   link.remove();
 };
 
+/**
+ * load package scripts via CDN into scope
+ * @param {Array} array of package CDNs to load
+ * @param {*} callback
+ */
+// eslint-disable-next-line consistent-return
+const load_package = async (array, callback) => {
+  cellActivity("loading", "");
+  const loader = function (src, handler) {
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = src;
+    script.onload = script.onreadystatechange = function () {
+      script.onreadystatechange = script.onload = null;
+      handler();
+      cellActivity("success", "Package successfully loaded");
+    };
+    script.onerror = function (error) {
+      cellActivity(
+        "error",
+        `Failed to load package ${error.path[0].src}. Check internet connection or package url`
+      );
+    };
+    script.async = true;
+    document.body.appendChild(script);
+    eval(script);
+  };
+  (function run() {
+    if (array.length !== 0) {
+      loader(array.shift(), run);
+    } else {
+      // eslint-disable-next-line no-unused-expressions
+      callback && callback();
+    }
+  })();
+  return "done";
+};
+
 export const load_notebook = (dispatch) => {
   const { files } = document.getElementById("import-notebook-file");
   let json_content = null;
@@ -144,8 +209,74 @@ export const load_notebook = (dispatch) => {
     reader.readAsText(content);
   }
 };
+/**
+ * Returns the id of the current cell's output div
+ */
+function this_div() {
+  const id = `#cell-output-${window.current_cell}`;
+  const rand_div_name = `random_div_#${id}`;
+  const html = `
+      <div class="col-md-1"></div>
+      <div class="col-md-9" id=${rand_div_name}>
+      </div>
+      <div class="col-md-2"></div>
+      `;
+  document.getElementById(id).append(html);
+  return rand_div_name;
+}
+
+/**
+ * Creates multiple divs for plotting in an output cell
+ * @param {String} name of the div to create
+ * @param {Function} callback
+ */
+// eslint-disable-next-line no-unused-vars
+function viz(name, callback) {
+  console.log(name);
+  // utility function to enabling ploting
+  // create the ploting div needed
+
+  const id = `#cell-output-${window.current_cell}`;
+  console.log(document.getElementById(id));
+  document.getElementById(id).append(`<div>ddl;</div>`);
+  // eslint-disable-next-line no-unused-vars
+}
+/**
+ * Helper function to load CSV data into Danfo.js Data Structure
+ * @param {String} path to CSV data.
+ */
+// eslint-disable-next-line consistent-return
+async function load_csv(path) {
+  cellActivity("loading", "");
+  try {
+    // eslint-disable-next-line no-undef
+    const df = await dfd.read_csv(path);
+    cellActivity("success", "Successfully loaded csv");
+    return df;
+  } catch (error) {
+    cellActivity(
+      "error",
+      "Failed to load csv. Check your internet connection or your csv path"
+    );
+  }
+}
+
+/**
+ * Helper function to easily log output from for loops in Dom
+ * @param {*} args
+ */
+function forLoop_log(args) {
+  const id = `#cell-output-${window.current_cell}`;
+  document.getElementById(id).append(`${args}<br />`);
+}
+
+console.forlog = forLoop_log;
 
 export const makeGlobal = () => {
   window.print_val = print_val;
   window.table = table;
+  window.load_package = load_package;
+  window.load_csv = load_csv;
+  window.this_div = this_div;
+  window.viz = viz;
 };

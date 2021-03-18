@@ -2,6 +2,7 @@
 // eslint-disable-next-line consistent-return
 export const reducer = (state, action) => {
   if (action.type === "CHANGE_CELL") {
+    console.log(state);
     const stateCells = state.cells.map((cell) => {
       if (cell.id === action.payload.id) {
         return action.payload;
