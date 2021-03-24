@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from "prop-types";
 import { CgSoftwareDownload, CgMathPlus } from "react-icons/cg";
@@ -12,11 +12,19 @@ import {
 } from "./header.style";
 
 export default function Header({ download, load }) {
+  const [noteName, setNoteName] = useState("untitled.ipynb");
+  const onNoteTitleChange = (e) => {
+    setNoteName(e);
+  };
   return (
     <HeaderContainer>
       <div></div>
       <NoteEditContainer>
-        <NoteTitle type="text" value="untitled.ipynb" />
+        <NoteTitle
+          onChange={(e) => onNoteTitleChange(e.target.value)}
+          type="text"
+          value={noteName}
+        />
         <div>
           <AddNoteLabel htmlFor="import-notebook-file">
             {" "}
@@ -29,7 +37,11 @@ export default function Header({ download, load }) {
           <AddNoteInput
             type="file"
             id="import-notebook-file"
-            onChange={() => load()}
+            onChange={() => {
+              const fileName = load();
+              const name = `${fileName.split(".")[0]}.ipynb`;
+              onNoteTitleChange(name);
+            }}
           />
         </div>
       </NoteEditContainer>

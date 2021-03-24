@@ -196,6 +196,7 @@ const load_package = async (array, callback) => {
 };
 
 export const load_notebook = (dispatch) => {
+  let fileName = null;
   const { files } = document.getElementById("import-notebook-file");
   let json_content = null;
   if (files.length > 0) {
@@ -207,7 +208,9 @@ export const load_notebook = (dispatch) => {
       dispatch({ type: "LOAD_NOTE", payload: json });
     };
     reader.readAsText(content);
+    fileName = content.name;
   }
+  return fileName;
 };
 /**
  * Returns the id of the current cell's output div
