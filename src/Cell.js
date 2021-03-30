@@ -35,18 +35,21 @@ export default function Cell({
   setCurrentCell,
   cellId,
 }) {
-  const cellOutputId = `#cell-output-${cellId}`;
+  const cellOutputId = `out_${cellId}`;
   const refCode = useRef(null);
   const refOutput = useRef("");
   const [showMoreCellButton, setShowMoreCellButton] = useState("none");
   useEffect(() => {
+    console.log("hello");
     if (currentCell === cellId) {
       setShowMoreCellButton("flex");
     } else {
       setShowMoreCellButton("none");
     }
   }, [cellId, currentCell]);
+  // eslint-disable-next-line consistent-return
   const getCode = async () => {
+    console.log("oops");
     window.current_cell = cellId;
     if (cell.type === "code") {
       const input = refCode.current.getCodeMirror().getValue();
@@ -83,7 +86,8 @@ export default function Cell({
           input.includes("console.log(")
         ) {
           // eslint-disable-next-line no-eval
-          console.log("hello world");
+          const id = `out_${window.current_cell}`;
+          return false;
         }
         // eslint-disable-next-line no-eval
         const cellstate = { ...cell, input, output };

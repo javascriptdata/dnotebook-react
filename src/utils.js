@@ -1,26 +1,20 @@
+/* eslint-disable prefer-const */
 // Function for cell on going activity
 function cellActivity(type, message) {
   if (type === "loading") {
     document.getElementById("play").style.display = "none";
     document.getElementById("activity-loader").style.display = "block";
-    document.getElementById(`#cell-output-${window.current_cell}`).innerHTML =
-      "";
+    document.getElementById(`out_${window.current_cell}`).innerHTML = "";
   } else if (type === "success") {
     document.getElementById("play").style.display = "block";
     document.getElementById("activity-loader").style.display = "none";
-    document.getElementById(
-      `#cell-output-${window.current_cell}`
-    ).innerHTML = message;
-    document.getElementById(`#cell-output-${window.current_cell}`).style.color =
-      "white";
+    document.getElementById(`out_${window.current_cell}`).innerHTML = message;
+    document.getElementById(`out_${window.current_cell}`).style.color = "white";
   } else {
     document.getElementById("play").style.display = "block";
     document.getElementById("activity-loader").style.display = "none";
-    document.getElementById(
-      `#cell-output-${window.current_cell}`
-    ).innerHTML = message;
-    document.getElementById(`#cell-output-${window.current_cell}`).style.color =
-      "red";
+    document.getElementById(`out_${window.current_cell}`).innerHTML = message;
+    document.getElementById(`out_${window.current_cell}`).style.color = "red";
   }
 }
 /* eslint-disable no-eval */
@@ -216,15 +210,15 @@ export const load_notebook = (dispatch) => {
  * Returns the id of the current cell's output div
  */
 function this_div() {
-  const id = `#cell-output-${window.current_cell}`;
-  const rand_div_name = `random_div_#${id}`;
+  const id = `out_${window.current_cell}`;
+  const rand_div_name = `random_div_${id}`;
   const html = `
       <div class="col-md-1"></div>
       <div class="col-md-9" id=${rand_div_name}>
       </div>
       <div class="col-md-2"></div>
       `;
-  document.getElementById(id).append(html);
+  document.getElementById(id).innerHTML += html;
   return rand_div_name;
 }
 
@@ -235,13 +229,14 @@ function this_div() {
  */
 // eslint-disable-next-line no-unused-vars
 function viz(name, callback) {
-  console.log(name);
   // utility function to enabling ploting
   // create the ploting div needed
-
-  const id = `#cell-output-${window.current_cell}`;
-  console.log(document.getElementById(id));
-  document.getElementById(id).append(`<div>ddl;</div>`);
+  // eslint-disable-next-line prefer-const
+  let id = `out_${window.current_cell}`;
+  document.getElementById(id).innerHTML += `<div id=${name}></div>`;
+  // eslint-disable-next-line no-unused-vars
+  let cb = callback(name);
+  console.log(cb);
   // eslint-disable-next-line no-unused-vars
 }
 /**
@@ -269,7 +264,7 @@ async function load_csv(path) {
  * @param {*} args
  */
 function forLoop_log(args) {
-  const id = `#cell-output-${window.current_cell}`;
+  const id = `#out_${window.current_cell}`;
   document.getElementById(id).append(`${args}<br />`);
 }
 
