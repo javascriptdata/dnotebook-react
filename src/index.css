@@ -30,3 +30,7 @@ a{
   color: #36c5ce;
   text-decoration: none;
 }
+
+input:focus{
+  outline: none !important;
+}

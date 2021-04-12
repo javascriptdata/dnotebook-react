@@ -27,6 +27,10 @@ import roll from "./static/rolling.svg";
 require("codemirror/lib/codemirror.css");
 require("codemirror/mode/javascript/javascript");
 require("codemirror/theme/yeti.css");
+require("codemirror/addon/edit/closebrackets");
+require("codemirror/addon/edit/matchbrackets");
+require("codemirror/addon/hint/javascript-hint");
+require("codemirror/addon/hint/show-hint");
 
 export default function Cell({
   cell,
@@ -35,7 +39,7 @@ export default function Cell({
   setCurrentCell,
   cellId,
 }) {
-  const cellOutputId = `#cell-output-${cellId}`;
+  const cellOutputId = `out_${cellId}`;
   const refCode = useRef(null);
   const refOutput = useRef("");
   const [showMoreCellButton, setShowMoreCellButton] = useState("none");
@@ -46,6 +50,7 @@ export default function Cell({
       setShowMoreCellButton("none");
     }
   }, [cellId, currentCell]);
+  // eslint-disable-next-line consistent-return
   const getCode = async () => {
     window.current_cell = cellId;
     if (cell.type === "code") {
@@ -77,13 +82,12 @@ export default function Cell({
             }
           }
         }
-        if (
-          input.includes("table") ||
-          input.includes("plot") ||
-          input.includes("console.log(")
-        ) {
+        if (input.includes("table") || input.includes("plot")) {
           // eslint-disable-next-line no-eval
-          console.log("hello world");
+          return false;
+        }
+        if (input.includes("console.for")) {
+          return false;
         }
         // eslint-disable-next-line no-eval
         const cellstate = { ...cell, input, output };
