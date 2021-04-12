@@ -264,8 +264,10 @@ async function load_csv(path) {
  * @param {*} args
  */
 function forLoop_log(args) {
-  const id = `#out_${window.current_cell}`;
-  document.getElementById(id).append(`${args}<br />`);
+  let id = `out_${window.current_cell}`;
+  let logs = document.createElement("p");
+  logs.append(`${args}`);
+  document.getElementById(id).append(logs);
 }
 
 console.forlog = forLoop_log;

@@ -84,7 +84,9 @@ export default function Cell({
         }
         if (input.includes("table") || input.includes("plot")) {
           // eslint-disable-next-line no-eval
-          const id = `out_${window.current_cell}`;
+          return false;
+        }
+        if (input.includes("console.for")) {
           return false;
         }
         // eslint-disable-next-line no-eval
