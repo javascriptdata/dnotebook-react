@@ -182,23 +182,22 @@ export default function Cell({
         <RunContainer>
           {cellId == activeCell ? (
             <div
-              id="play"
               onClick={() => {
                 getCode();
               }}
             >
-              <BsFillCaretRightFill color="#FFDF28" fontSize="30px" />
+              <BsFillCaretRightFill id="play" color="#FFDF28" fontSize="30px" />
+              <img
+                id="activity-loader"
+                style={{ display: "none" }}
+                width="30px"
+                src={roll}
+                alt="running-cell"
+              />
             </div>
           ) : (
             <div>[{cellId}]:</div>
           )}
-          <img
-            id="activity-loader"
-            style={{ display: "none" }}
-            width="30px"
-            src={roll}
-            alt="running-cell"
-          />
         </RunContainer>
         <CellBodyContainer>
           <CellHead>
