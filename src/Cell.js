@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable object-shorthand */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prefer-rest-params */
@@ -38,6 +39,8 @@ export default function Cell({
   currentCell,
   setCurrentCell,
   cellId,
+  activeCell,
+  setActiveCell,
 }) {
   const cellOutputId = `out_${cellId}`;
   const refCode = useRef(null);
@@ -82,7 +85,7 @@ export default function Cell({
             }
           }
         }
-        if (input.includes("table") || input.includes("plot")) {
+        if (input.includes("plot")) {
           // eslint-disable-next-line no-eval
           return false;
         }
@@ -150,6 +153,7 @@ export default function Cell({
       newCell.type = "code";
     }
     setCurrentCell(currentCell + 1);
+
     dispatch({ type: "ADD_CELL", payload: newCell, currentId: id });
   };
 
@@ -176,7 +180,7 @@ export default function Cell({
     <div style={{ paddingBottom: "30px" }}>
       <CellContainer>
         <RunContainer>
-          {currentCell === cellId ? (
+          {cellId == activeCell ? (
             <div
               id="play"
               onClick={() => {
@@ -272,7 +276,9 @@ export default function Cell({
           >
             {cell.type === "code" ? (
               <CodeMirror
-                onFocusChange={() => setCurrentCell(cellId)}
+                onFocusChange={() => {
+                  setActiveCell(cellId);
+                }}
                 value={cell.input}
                 ref={refCode}
                 options={{
@@ -288,7 +294,7 @@ export default function Cell({
               />
             ) : (
               <TextCell
-                selectCell={() => setCurrentCell(cellId)}
+                selectCell={() => setActiveCell(cellId)}
                 refText={refCode}
               />
             )}

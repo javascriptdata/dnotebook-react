@@ -11,6 +11,7 @@ const defaultState = {
 export default function Demo() {
   const [state, dispatch] = useReducer(reducer, defaultState);
   const [currentCell, setCurrentCell] = useState(null);
+  const [activeCell, setActiveCell] = useState(1);
 
   const load = () => load_notebook(dispatch);
   const download = () => downLoad_notebook(state);
@@ -26,6 +27,8 @@ export default function Demo() {
             currentCell={currentCell}
             setCurrentCell={setCurrentCell}
             cellId={index + 1}
+            activeCell={activeCell}
+            setActiveCell={setActiveCell}
           />
         );
       })}

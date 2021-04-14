@@ -17,6 +17,7 @@ export const reducer = (state, action) => {
   if (action.type === "ADD_CELL") {
     const newCell = [...state.cells];
     newCell.splice(action.currentId, 0, action.payload);
+    console.log(state);
     return {
       ...state,
       cells: newCell,
