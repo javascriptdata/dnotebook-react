@@ -136,14 +136,18 @@ export function table(df) {
   return table;
 }
 
-export const downLoad_notebook = (state) => {
+export const downLoad_notebook = (state, name) => {
   const data = JSON.stringify(state.cells);
   const blob = new Blob([data], { type: "application/json" });
   const url = (window.URL || window.webkitURL).createObjectURL(blob);
 
   const link = document.createElement("a");
-  const name = "Dnote-react";
-  link.download = `${name}.json`;
+  let fileName = "Dnote-react";
+  if (name) {
+    // eslint-disable-next-line prefer-destructuring
+    fileName = name.split(".")[0];
+  }
+  link.download = `${fileName}.json`;
   link.href = url;
 
   document.body.appendChild(link);

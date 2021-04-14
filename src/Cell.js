@@ -47,7 +47,7 @@ export default function Cell({
   const refOutput = useRef("");
   const [showMoreCellButton, setShowMoreCellButton] = useState("none");
   useEffect(() => {
-    if (currentCell === cellId) {
+    if (cellId === activeCell) {
       setShowMoreCellButton("flex");
     } else {
       setShowMoreCellButton("none");

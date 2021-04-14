@@ -12,15 +12,11 @@ code {
     monospace;
 }
 
-h1,h2,h3,h4,h5,h6{
-  margin: 0;
-  padding: 0;
-}
-
 .CodeMirror{
   min-height: 50px !important;
   height: auto !important;
 }
+
 textarea{
   width: 100%;
   min-height: 7vh;
@@ -31,6 +27,7 @@ textarea{
 textarea:focus{
     outline: none;
 }
+
 a{
   color: #36c5ce;
   text-decoration: none;
@@ -38,4 +35,8 @@ a{
 
 input:focus{
   outline: none !important;
+}
+
+button:focus{
+  outline: 0;
 }

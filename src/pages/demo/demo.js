@@ -14,7 +14,7 @@ export default function Demo() {
   const [activeCell, setActiveCell] = useState(1);
 
   const load = () => load_notebook(dispatch);
-  const download = () => downLoad_notebook(state);
+  const download = (name) => downLoad_notebook(state, name);
   return (
     <div>
       <Header download={download} load={load} />

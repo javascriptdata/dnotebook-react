@@ -12,7 +12,7 @@ import {
 } from "./header.style";
 
 export default function Header({ download, load }) {
-  const [noteName, setNoteName] = useState("untitled.ipynb");
+  const [noteName, setNoteName] = useState("untitled.json");
   const onNoteTitleChange = (e) => {
     setNoteName(e);
   };
@@ -45,7 +45,7 @@ export default function Header({ download, load }) {
           />
         </div>
       </NoteEditContainer>
-      <DownloadNoteBook onClick={() => download()}>
+      <DownloadNoteBook onClick={() => download(noteName)}>
         {" "}
         <CgSoftwareDownload
           style={{
