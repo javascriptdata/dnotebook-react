@@ -1,0 +1,15 @@
+{
+  "cells": [
+    {
+      "id": "cell_2",
+      "input": "## A Quick Visualization ",
+      "type": "text"
+    },
+    {
+      "id": "cell_1",
+      "input": "var df2;\nload_csv(\"https://raw.githubusercontent.com/risenW/medium_tutorial_notebooks/master/train.csv\").then((df) => {\n  df2 = df\n});",
+      "output": "",
+      "type": "code"
+    }
+  ]
+}

@@ -45,14 +45,7 @@ export default function Cell({
   const cellOutputId = `out_${cellId}`;
   const refCode = useRef(null);
   const refOutput = useRef("");
-  const [showMoreCellButton, setShowMoreCellButton] = useState("none");
-  useEffect(() => {
-    if (cellId === activeCell) {
-      setShowMoreCellButton("flex");
-    } else {
-      setShowMoreCellButton("none");
-    }
-  }, [cellId, currentCell]);
+  useEffect(() => {}, [cellId, currentCell]);
   // eslint-disable-next-line consistent-return
   const getCode = async () => {
     window.current_cell = cellId;
@@ -84,13 +77,8 @@ export default function Cell({
               output = "";
             }
           }
-        }
-        if (input.includes("plot")) {
-          // eslint-disable-next-line no-eval
-          return false;
-        }
-        if (input.includes("console.for")) {
-          return false;
+        } else if (input.includes("plot") || input.includes("console.for")) {
+          return document.getElementById(`out_${currentCell}`);
         }
         // eslint-disable-next-line no-eval
         const cellstate = { ...cell, input, output };
@@ -237,36 +225,40 @@ export default function Cell({
                 Text
               </AddCellButton>
             </div>
-            <OtherCellButtonWrapper display={showMoreCellButton}>
-              <CellButton
-                onClick={() => {
-                  upCell("code");
-                }}
-              >
-                <div>
-                  {" "}
-                  <CgArrowUp />
-                </div>
-              </CellButton>
-              <CellButton
-                onClick={() => {
-                  downCell("text");
-                }}
-              >
-                <div>
-                  <CgArrowDown />
-                </div>
-              </CellButton>
-              <CellButton
-                onClick={() => {
-                  deleteCell();
-                }}
-              >
-                <div>
-                  <CgTrash />
-                </div>
-              </CellButton>
-            </OtherCellButtonWrapper>
+            {cellId === activeCell ? (
+              <OtherCellButtonWrapper>
+                <CellButton
+                  onClick={() => {
+                    upCell("code");
+                  }}
+                >
+                  <div>
+                    {" "}
+                    <CgArrowUp />
+                  </div>
+                </CellButton>
+                <CellButton
+                  onClick={() => {
+                    downCell("text");
+                  }}
+                >
+                  <div>
+                    <CgArrowDown />
+                  </div>
+                </CellButton>
+                <CellButton
+                  onClick={() => {
+                    deleteCell();
+                  }}
+                >
+                  <div>
+                    <CgTrash />
+                  </div>
+                </CellButton>
+              </OtherCellButtonWrapper>
+            ) : (
+              <div></div>
+            )}
           </CellHead>
           <div
             style={{
@@ -276,6 +268,7 @@ export default function Cell({
             {cell.type === "code" ? (
               <CodeMirror
                 onFocusChange={() => {
+                  console.log(activeCell);
                   setActiveCell(cellId);
                 }}
                 value={cell.input}

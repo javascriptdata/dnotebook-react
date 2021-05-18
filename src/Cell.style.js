@@ -41,7 +41,6 @@ export const OtherCellButtonWrapper = styled.div`
   display: flex;
   align-items: flex-end;
   margin-top: 37px;
-  display: ${(props) => props.display};
 `;
 
 export const CellButton = styled.button`

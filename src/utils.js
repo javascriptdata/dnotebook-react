@@ -1,3 +1,4 @@
+import { Blob } from "blob-polyfill";
 /* eslint-disable prefer-const */
 // Function for cell on going activity
 function cellActivity(type, message) {
@@ -140,7 +141,6 @@ export const downLoad_notebook = (state, name) => {
   const data = JSON.stringify(state.cells);
   const blob = new Blob([data], { type: "application/json" });
   const url = (window.URL || window.webkitURL).createObjectURL(blob);
-
   const link = document.createElement("a");
   let fileName = "Dnote-react";
   if (name) {
@@ -149,10 +149,10 @@ export const downLoad_notebook = (state, name) => {
   }
   link.download = `${fileName}.json`;
   link.href = url;
-
   document.body.appendChild(link);
   link.click();
   link.remove();
+  return link;
 };
 
 /**
@@ -161,7 +161,7 @@ export const downLoad_notebook = (state, name) => {
  * @param {*} callback
  */
 // eslint-disable-next-line consistent-return
-const load_package = async (array, callback) => {
+export const load_package = async (array, callback) => {
   cellActivity("loading", "");
   const loader = function (src, handler) {
     const script = document.createElement("script");
@@ -240,7 +240,7 @@ function viz(name, callback) {
   document.getElementById(id).innerHTML += `<div id=${name}></div>`;
   // eslint-disable-next-line no-unused-vars
   let cb = callback(name);
-  console.log(cb);
+  return cb;
   // eslint-disable-next-line no-unused-vars
 }
 /**
@@ -248,7 +248,7 @@ function viz(name, callback) {
  * @param {String} path to CSV data.
  */
 // eslint-disable-next-line consistent-return
-async function load_csv(path) {
+export async function load_csv(path) {
   cellActivity("loading", "");
   try {
     // eslint-disable-next-line no-undef
@@ -256,7 +256,7 @@ async function load_csv(path) {
     cellActivity("success", "Successfully loaded csv");
     return df;
   } catch (error) {
-    cellActivity(
+    return cellActivity(
       "error",
       "Failed to load csv. Check your internet connection or your csv path"
     );

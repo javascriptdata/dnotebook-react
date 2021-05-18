@@ -27,6 +27,7 @@ export const reducer = (state, action) => {
   if (action.type === "DELETE_CELL") {
     if (state.cells.length > 1) {
       const newCell = state.cells.filter((cell) => {
+        console.log(cell);
         return cell.id !== action.payload;
       });
 
