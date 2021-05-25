@@ -265,7 +265,6 @@ export default function Cell({
             {cell.type === "code" ? (
               <CodeMirror
                 onFocusChange={() => {
-                  console.log(activeCell);
                   setActiveCell(cellId);
                 }}
                 value={cell.input}
@@ -298,6 +297,7 @@ export default function Cell({
       >
         <Output
           ref={refOutput}
+          type={cell.type}
           onClick={() => {
             disableOutput();
           }}

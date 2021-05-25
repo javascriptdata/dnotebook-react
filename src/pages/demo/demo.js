@@ -2,10 +2,11 @@ import React, { useState, useReducer } from "react";
 import Cell from "../../Cell";
 import { reducer } from "../../reducer";
 import { downLoad_notebook, load_notebook } from "../../utils";
+import data from "../../assets/Demo.json";
 import Header from "../../components/header/header";
 
 const defaultState = {
-  cells: [{ input: "", output: "", type: "code", id: "cell_1" }],
+  cells: data,
 };
 
 export default function Demo() {
