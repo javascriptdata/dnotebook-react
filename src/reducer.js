@@ -27,7 +27,6 @@ export const reducer = (state, action) => {
     );
     const { payload } = action;
     payload.id = `cell_${getMax + 1}`;
-    console.log(payload);
     newCell.splice(action.currentId, 0, payload);
     console.log(newCell);
     return {

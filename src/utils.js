@@ -237,10 +237,10 @@ function viz(name, callback) {
   // create the ploting div needed
   // eslint-disable-next-line prefer-const
   let id = `out_${window.current_cell}`;
-  document.getElementById(id).innerHTML += `<div id=${name}></div>`;
+  const a = (document.getElementById(id).innerHTML += `<div id=${name}></div>`);
   // eslint-disable-next-line no-unused-vars
   let cb = callback(name);
-  return cb;
+  return a;
   // eslint-disable-next-line no-unused-vars
 }
 /**

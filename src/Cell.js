@@ -77,8 +77,6 @@ export default function Cell({
               output = "";
             }
           }
-        } else if (input.includes("plot") || input.includes("console.for")) {
-          return document.getElementById(`out_${currentCell}`);
         }
         // eslint-disable-next-line no-eval
         const cellstate = { ...cell, input, output };
