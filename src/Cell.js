@@ -95,9 +95,7 @@ export default function Cell({
     }
   };
 
-  const setId = () => {
-    // eslint-disable-next-line radix
-    const id = currentCell || parseInt(cell.id.split("_")[1]);
+  const setId = (id) => {
     setCurrentCell(id);
   };
 
@@ -111,7 +109,9 @@ export default function Cell({
       refCode.current.getCodeMirror().setValue(cell.input);
       refOutput.current.innerHTML = cell.output;
     }
-    setId();
+    // eslint-disable-next-line radix
+    const id = parseInt(cell.id.split("_")[1]);
+    setId(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cell]);
 
@@ -130,7 +130,6 @@ export default function Cell({
   const newCell = (id, type) => {
     // eslint-disable-next-line no-shadow
     const newCell = {
-      id: `cell_${currentCell + 1}`,
       input: "",
     };
 

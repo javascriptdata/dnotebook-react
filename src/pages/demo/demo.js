@@ -5,7 +5,7 @@ import { downLoad_notebook, load_notebook } from "../../utils";
 import Header from "../../components/header/header";
 
 const defaultState = {
-  cells: [{ id: "cell_1", input: "", output: "", type: "code" }],
+  cells: [{ input: "", output: "", type: "code", id: "cell_1" }],
 };
 
 export default function Demo() {
