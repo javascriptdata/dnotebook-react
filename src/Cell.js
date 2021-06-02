@@ -105,6 +105,7 @@ export default function Cell({
       refCode.current.style.display = cell.input ? "none" : "block";
     } else {
       refCode.current.getCodeMirror().setValue(cell.input);
+      refCode.current.getCodeMirror().setSize("100%", "auto");
       refOutput.current.innerHTML = cell.output;
     }
     // eslint-disable-next-line radix
