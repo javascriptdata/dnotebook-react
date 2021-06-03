@@ -16,6 +16,7 @@ code {
   min-height: 50px !important;
   height: auto !important;
 }
+
 textarea{
   width: 100%;
   min-height: 7vh;
@@ -26,6 +27,7 @@ textarea{
 textarea:focus{
     outline: none;
 }
+
 a{
   color: #36c5ce;
   text-decoration: none;
@@ -33,4 +35,8 @@ a{
 
 input:focus{
   outline: none !important;
+}
+
+button:focus{
+  outline: 0;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable object-shorthand */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prefer-rest-params */
@@ -38,18 +39,13 @@ export default function Cell({
   currentCell,
   setCurrentCell,
   cellId,
+  activeCell,
+  setActiveCell,
 }) {
   const cellOutputId = `out_${cellId}`;
   const refCode = useRef(null);
   const refOutput = useRef("");
-  const [showMoreCellButton, setShowMoreCellButton] = useState("none");
-  useEffect(() => {
-    if (currentCell === cellId) {
-      setShowMoreCellButton("flex");
-    } else {
-      setShowMoreCellButton("none");
-    }
-  }, [cellId, currentCell]);
+  useEffect(() => {}, [cellId, currentCell]);
   // eslint-disable-next-line consistent-return
   const getCode = async () => {
     window.current_cell = cellId;
@@ -82,13 +78,6 @@ export default function Cell({
             }
           }
         }
-        if (input.includes("table") || input.includes("plot")) {
-          // eslint-disable-next-line no-eval
-          return false;
-        }
-        if (input.includes("console.for")) {
-          return false;
-        }
         // eslint-disable-next-line no-eval
         const cellstate = { ...cell, input, output };
         dispatch({ type: "CHANGE_CELL", payload: cellstate });
@@ -104,9 +93,7 @@ export default function Cell({
     }
   };
 
-  const setId = () => {
-    // eslint-disable-next-line radix
-    const id = currentCell || parseInt(cell.id.split("_")[1]);
+  const setId = (id) => {
     setCurrentCell(id);
   };
 
@@ -121,7 +108,9 @@ export default function Cell({
       refCode.current.getCodeMirror().setSize("100%", "auto");
       refOutput.current.innerHTML = cell.output;
     }
-    setId();
+    // eslint-disable-next-line radix
+    const id = parseInt(cell.id.split("_")[1]);
+    setId(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cell]);
 
@@ -140,7 +129,6 @@ export default function Cell({
   const newCell = (id, type) => {
     // eslint-disable-next-line no-shadow
     const newCell = {
-      id: `cell_${currentCell + 1}`,
       input: "",
     };
 
@@ -151,6 +139,7 @@ export default function Cell({
       newCell.type = "code";
     }
     setCurrentCell(currentCell + 1);
+
     dispatch({ type: "ADD_CELL", payload: newCell, currentId: id });
   };
 
@@ -177,25 +166,24 @@ export default function Cell({
     <div style={{ paddingBottom: "30px" }}>
       <CellContainer>
         <RunContainer>
-          {currentCell === cellId ? (
+          {cellId == activeCell ? (
             <div
-              id="play"
               onClick={() => {
                 getCode();
               }}
             >
-              <BsFillCaretRightFill color="#FFDF28" fontSize="30px" />
+              <BsFillCaretRightFill id="play" color="#FFDF28" fontSize="30px" />
+              <img
+                id="activity-loader"
+                style={{ display: "none" }}
+                width="30px"
+                src={roll}
+                alt="running-cell"
+              />
             </div>
           ) : (
             <div>[{cellId}]:</div>
           )}
-          <img
-            id="activity-loader"
-            style={{ display: "none" }}
-            width="30px"
-            src={roll}
-            alt="running-cell"
-          />
         </RunContainer>
         <CellBodyContainer>
           <CellHead>
@@ -235,36 +223,40 @@ export default function Cell({
                 Text
               </AddCellButton>
             </div>
-            <OtherCellButtonWrapper display={showMoreCellButton}>
-              <CellButton
-                onClick={() => {
-                  upCell("code");
-                }}
-              >
-                <div>
-                  {" "}
-                  <CgArrowUp />
-                </div>
-              </CellButton>
-              <CellButton
-                onClick={() => {
-                  downCell("text");
-                }}
-              >
-                <div>
-                  <CgArrowDown />
-                </div>
-              </CellButton>
-              <CellButton
-                onClick={() => {
-                  deleteCell();
-                }}
-              >
-                <div>
-                  <CgTrash />
-                </div>
-              </CellButton>
-            </OtherCellButtonWrapper>
+            {cellId === activeCell ? (
+              <OtherCellButtonWrapper>
+                <CellButton
+                  onClick={() => {
+                    upCell("code");
+                  }}
+                >
+                  <div>
+                    {" "}
+                    <CgArrowUp />
+                  </div>
+                </CellButton>
+                <CellButton
+                  onClick={() => {
+                    downCell("text");
+                  }}
+                >
+                  <div>
+                    <CgArrowDown />
+                  </div>
+                </CellButton>
+                <CellButton
+                  onClick={() => {
+                    deleteCell();
+                  }}
+                >
+                  <div>
+                    <CgTrash />
+                  </div>
+                </CellButton>
+              </OtherCellButtonWrapper>
+            ) : (
+              <div></div>
+            )}
           </CellHead>
           <div
             style={{
@@ -273,7 +265,9 @@ export default function Cell({
           >
             {cell.type === "code" ? (
               <CodeMirror
-                onFocusChange={() => setCurrentCell(cellId)}
+                onFocusChange={() => {
+                  setActiveCell(cellId);
+                }}
                 value={cell.input}
                 ref={refCode}
                 options={{
@@ -289,7 +283,7 @@ export default function Cell({
               />
             ) : (
               <TextCell
-                selectCell={() => setCurrentCell(cellId)}
+                selectCell={() => setActiveCell(cellId)}
                 refText={refCode}
               />
             )}
@@ -304,6 +298,7 @@ export default function Cell({
       >
         <Output
           ref={refOutput}
+          type={cell.type}
           onClick={() => {
             disableOutput();
           }}

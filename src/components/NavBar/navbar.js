@@ -16,7 +16,7 @@ import logo from "../../static/logo.svg";
 const links = [
   {
     title: "Getting Started",
-    link: "/getting-started",
+    link: "/",
   },
   {
     title: "Demo",
@@ -36,14 +36,14 @@ export default function NavBar() {
   const history = useHistory();
   const { pathname } = history.location;
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [active, setActive] = useState("/getting-started");
+  const [active, setActive] = useState("/");
 
   const handleDrawer = () => {
     setOpenDrawer(() => !openDrawer);
   };
   useEffect(() => {
-    if (pathname.includes("getting-started" || pathname === "/")) {
-      setActive("/getting-started");
+    if (pathname === "/") {
+      setActive("/");
     }
     if (pathname.includes("demo")) {
       setActive("/demo");

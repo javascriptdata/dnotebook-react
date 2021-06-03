@@ -41,7 +41,6 @@ export const OtherCellButtonWrapper = styled.div`
   display: flex;
   align-items: flex-end;
   margin-top: 37px;
-  display: ${(props) => props.display};
 `;
 
 export const CellButton = styled.button`
@@ -70,9 +69,9 @@ export const CellTextArea = styled.textarea`
 
 export const Output = styled.div`
   padding: 10px;
-  background: #2e2e2e;
+  background: ${(props) => props.type === "code" && "#2e2e2e"};
   border: none;
   margin-top: 10px;
-  color: white;
+  color: ${(props) => props.type === "code" && "white"};
   width: 93.6%;
 `;

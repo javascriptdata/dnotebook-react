@@ -15,8 +15,20 @@ export const reducer = (state, action) => {
   }
 
   if (action.type === "ADD_CELL") {
+    // Id generation is been done here because of the issue with dupluicate
+    // ids generated when using an existing note
     const newCell = [...state.cells];
-    newCell.splice(action.currentId, 0, action.payload);
+    const getMax = Math.max(
+      // eslint-disable-next-line func-names
+      ...newCell.map(function (o) {
+        // eslint-disable-next-line radix
+        return parseInt(o.id.split("_")[1]);
+      })
+    );
+    const { payload } = action;
+    payload.id = `cell_${getMax + 1}`;
+    newCell.splice(action.currentId, 0, payload);
+    console.log(newCell);
     return {
       ...state,
       cells: newCell,
@@ -26,6 +38,7 @@ export const reducer = (state, action) => {
   if (action.type === "DELETE_CELL") {
     if (state.cells.length > 1) {
       const newCell = state.cells.filter((cell) => {
+        console.log(cell);
         return cell.id !== action.payload;
       });
 
